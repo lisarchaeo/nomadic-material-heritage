@@ -106,7 +106,7 @@ function buildChips() {
 function chip(label, value, colours) {
   const b = document.createElement("button");
   b.type = "button";
-  b.className = "chip" + (!value || UTILITY_BUTTONS.includes(value) ? " util" : "");
+  b.className = "chip" + (!value ? " util" : UTILITY_BUTTONS.includes(value) ? " kind" : "");
   b.textContent = label;
   b.dataset.craft = value;
   if (colours) {
