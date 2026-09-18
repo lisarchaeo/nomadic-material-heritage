@@ -61,6 +61,7 @@ WORKERS = 4              # parallel downloads; kept low to be polite
 # Display order matters: this is the order of the craft buttons.
 CATEGORIES = [
     "Syrmaq", "Tus Kiiz", "Terme", "Skins & Leather", "Spindles",
+    "Felt & Fibre", "Tuyrlyk Bau",
     "Craft Videos", "Interviews", "Behind The Scenes",
 ]
 
@@ -72,9 +73,15 @@ CATEGORY_HINTS = {
     "Terme": ["terme", "терме"],
     "Skins & Leather": ["skin", "leather", "hide", "fur", "coat", "тері"],
     "Spindles": ["spindle", "ұршық"],
+    "Felt & Fibre": ["felting", "felt making", "making felt", "felt blanket", "rolling felt",
+                     "carding", "dye", "dyeing", "dyed", "spinning", "horsehair", "horse hair",
+                     "киіз басу", "иіру"],
+    "Tuyrlyk Bau": ["reed", "reed screen", "tuyrlyk", "tuyrlyk bau", "tuurlyk", "shym shi",
+                    "chiy", "шым ши"],
     "Behind The Scenes": ["work in progress", "behind the scenes", "collecting data",
                           "fieldwork", "field work", "documentation", "photographing",
-                          "filming"],
+                          "filming", "ger interior", "yurt interior", "interior of",
+                          "animals", "livestock", "sheep", "goat", "camel"],
 }
 
 # Custom repository fields the script keeps.
@@ -236,17 +243,23 @@ def slim(detail):
     }
 
 
+VIDEO_EXT = (".mp4", ".mov", ".m4v", ".avi", ".mkv", ".mts", ".mpg", ".mpeg", ".webm")
+AUDIO_EXT = (".wav", ".mp3", ".m4a", ".aac", ".flac", ".ogg", ".wma")
+IMAGE_EXT = (".tif", ".tiff", ".jpg", ".jpeg", ".png", ".heic", ".dng", ".cr2", ".nef")
+
+
 def media_kind(rec):
     """photo, video, audio, or None (not shown)."""
     if rec["type"] == "dataset":
         return None
     for f in rec["files"]:
-        m = f["mimetype"] or ""
-        if m.startswith("video/"):
+        m = (f["mimetype"] or "").lower()
+        name = (f["name"] or "").lower()
+        if m.startswith("video/") or name.endswith(VIDEO_EXT):
             return "video"
-        if m.startswith("audio/"):
+        if m.startswith("audio/") or name.endswith(AUDIO_EXT):
             return "audio"
-        if m.startswith("image/"):
+        if m.startswith("image/") or name.endswith(IMAGE_EXT):
             return "photo"
     if rec["type"] == "figure":
         return "photo"
@@ -255,8 +268,9 @@ def media_kind(rec):
 
 def primary_file(rec, kind):
     prefix = {"photo": "image/", "video": "video/", "audio": "audio/"}[kind]
+    exts = {"photo": IMAGE_EXT, "video": VIDEO_EXT, "audio": AUDIO_EXT}[kind]
     for f in rec["files"]:
-        if (f["mimetype"] or "").startswith(prefix):
+        if (f["mimetype"] or "").lower().startswith(prefix) or (f["name"] or "").lower().endswith(exts):
             return f
     return rec["files"][0] if rec["files"] else None
 
@@ -397,6 +411,7 @@ def main():
 
     # 4. Build items
     items, skipped, new_rows, sensitive, unknown_cats, jobs = [], {}, [], [], [], []
+    unrecognised = []
     cat_lookup = {c.lower(): c for c in CATEGORIES}
 
     for i in ids:
@@ -406,6 +421,9 @@ def main():
         kind = media_kind(rec)
         if kind is None:
             skipped[rec["type"] or "unknown"] = skipped.get(rec["type"] or "unknown", 0) + 1
+            if rec["type"] != "dataset":
+                files = "; ".join(f"{f['name']} ({f['mimetype']})" for f in rec["files"]) or "no files"
+                unrecognised.append((rec["custom"].get("Unique ID") or f"fs-{i}", rec["title"], files))
             continue
         cf = rec["custom"]
         uid = cf.get("Unique ID") or f"fs-{i}"
@@ -432,6 +450,9 @@ def main():
             new_rows.append(uid)
         else:
             row.update(info)
+            # a row you have not filled in or reviewed picks up newer suggestions
+            if not row["category"] and not row["reviewed"] and suggestion:
+                row["category"] = "; ".join(suggestion)
 
         chosen = []
         for c in re.split(r"[;,]", row["category"]):
@@ -610,6 +631,8 @@ def main():
             lambda r: f"- {r[0]} {r[1]}: {r[2]} (to show it, add a correction: show_sensitive = yes)")
     section("Preview could not be made (item view uses the embed player)", broken,
             lambda r: f"- {r[0]} {r[1]} ({r[2]}): {r[3]}")
+    section("Not shown: file type not recognised", unrecognised,
+            lambda r: f"- {r[0]} {r[1]}: {r[2]}")
     section("Unknown fields in corrections.csv", bad_fields,
             lambda r: f"- {r[0]}: \"{r[1]}\" (allowed: {', '.join(sorted(CORRECTABLE))})")
     section("Items whose details could not be read (will retry next time)", failed_details,
