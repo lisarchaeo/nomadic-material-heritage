@@ -27,9 +27,13 @@ const STRINGS = {
     unavailable: "Unavailable", photo_by: "Photo", video_by: "Film",
     contributors: "Contributors",
     licence: "Licence", showing: "Showing {n} items", showing_one: "Showing 1 item",
-    of: "{n} of {m} in this view", copied: "Link copied", no_preview:
+    of: "{n} of {m} in this view", copied: "Link copied",
+    mt_notice: "Some of this page is translated automatically and is still being checked. " +
+      "Corrections are welcome.", no_preview:
       "This item has no preview in the repository. Open it there to see the original.",
     page: "Page {n}", next_page: "Next →", prev_page: "← Previous",
+    not_ready: "This language is not ready yet, so the page is still in English. " +
+      "Item titles appear in the language the repository recorded them in.",
   },
   kk: {}, // filled in when the Kazakh translations are ready
   mn: {},
@@ -274,8 +278,12 @@ function drawGrid() {
         img.sizes = "100vw";
       }
       img.alt = text(featured, "title");
-      $("hero-credit").textContent = featured.credit
-        ? `${text(featured, "title")} · ${t("photo_by")}: ${featured.credit}` : "";
+      const credit = $("hero-credit");
+      if (credit) {
+        const by = featured.type === "video" ? t("video_by") : t("photo_by");
+        credit.textContent = featured.credit
+          ? `${text(featured, "title")} · ${by}: ${featured.credit}` : "";
+      }
     }
   }
 }
@@ -427,7 +435,12 @@ function setLanguage(lang) {
     const s = STRINGS[lang] && STRINGS[lang][key];
     if (s) el.textContent = s;
   });
-  $("translation-notice").hidden = lang === "en";
+  const notice = $("translation-notice");
+  if (notice) {
+    const translated = Object.keys(STRINGS[lang] || {}).length > 0;
+    notice.hidden = lang === "en";
+    notice.textContent = translated ? t("mt_notice") : STRINGS.en.not_ready;
+  }
   buildChips();
   buildSelects();
   apply(true);

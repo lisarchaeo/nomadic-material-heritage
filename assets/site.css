@@ -61,10 +61,14 @@ img { max-width: 100%; display: block; }
 .hero { display: flex; flex-direction: column; gap: 26px; padding-top: 6px; }
 .hero-photo {
   height: min(460px, 52vw); background: #5A4A3C; overflow: hidden;
-  display: flex; align-items: flex-end;
+  display: flex; align-items: flex-end; position: relative;
 }
-.hero-photo img { width: 100%; height: 100%; object-fit: cover; }
-.hero-credit { margin: -14px 0 0; font-size: 13px; color: var(--muted); }
+.hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--hero-position, 50% 18%); }
+.hero-credit {
+  position: absolute; left: 16px; right: 16px; bottom: 12px; margin: 0;
+  font-size: 13px; color: rgba(247, 245, 240, .85);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .65);
+}
 .hero-text { display: flex; flex-wrap: wrap; gap: 24px 64px; align-items: flex-start; }
 .hero-text h1 { margin: 0; font-size: clamp(32px, 4.2vw, 52px); line-height: 1.1; flex: 1 1 460px; }
 .hero-text p { margin: 6px 0 0; font-size: 18px; color: #4A463F; flex: 1 1 380px; }
