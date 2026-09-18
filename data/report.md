@@ -1,6 +1,6 @@
 # Data update report
 
-Updated 2026-09-18T14:42:33Z
+Updated 2026-09-18T14:47:37Z
 
 ## Summary
 
@@ -15,14 +15,14 @@ Updated 2026-09-18T14:42:33Z
 - Syrmaq: 932
 - Tus Kiiz: 151
 - Terme: 30
-- Skins & Leather: 34
+- Skins & Leather: 36
 - Spindles: 21
 - Craft Videos: 25
 - Interviews: 13
 - Behind The Scenes: 23
-- No category: 59
+- No category: 57
 
-## Needs a category (59)
+## Needs a category (57)
 
 - 2021SG06-B01-0759
 - 2021SG06-B11-0805
@@ -80,9 +80,7 @@ Updated 2026-09-18T14:42:33Z
 - 2021SG06-C03-0877
 - 2021SG06-C03-0878
 - 2021SG06-C03-1266
-- 2021SG06-H07-1131
 - 2021SG06-I03-1132
-- 2021SG06-I06-1122
 
 ## Unknown category names in categories.csv (0)
 
