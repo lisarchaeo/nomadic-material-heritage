@@ -1,0 +1,65 @@
+name: Update data from the repository
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"   # every Monday at 03:00 UTC
+  workflow_dispatch:
+    inputs:
+      full_refresh:
+        description: "Re-read every item from scratch (slower)"
+        type: boolean
+        default: false
+  push:
+    paths:
+      - "data/categories.csv"
+      - "data/corrections.csv"
+      - "data/places.csv"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install tools
+        run: |
+          pip install pillow
+          which ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+
+      - name: Build the data
+        run: |
+          if [ "${{ inputs.full_refresh }}" = "true" ]; then
+            python scripts/build_data.py --full
+          else
+            python scripts/build_data.py
+          fi
+
+      - name: Show the report
+        if: always()
+        run: |
+          if [ -f data/report.md ]; then cat data/report.md >> $GITHUB_STEP_SUMMARY; fi
+
+      - name: Save the results
+        run: |
+          git config user.name "data-update-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data media
+          if git diff --staged --quiet; then
+            echo "Nothing changed."
+          else
+            git commit -m "Data update $(date -u +%Y-%m-%d)"
+            git pull --rebase
+            git push
+          fi
