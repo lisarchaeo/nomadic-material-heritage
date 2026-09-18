@@ -96,7 +96,7 @@ KEEP_FIELDS = [
 CORRECTABLE = {
     "title_en", "title_kk", "title_mn",
     "description_en", "description_kk", "description_mn",
-    "credit", "maker", "household", "place", "date",
+    "credit", "maker", "contributors", "household", "place", "date",
     "cultural_group", "frame_time", "hide", "show_sensitive",
 }
 
@@ -500,6 +500,7 @@ def main():
             "categories": chosen,
             "credit": credit,
             "maker": fix.get("maker") or row["maker"],
+            "contributors": fix.get("contributors") or cf.get("Participants", ""),
             "household": fix.get("household") or row["household"],
             "place": place,
             "cultural_group": fix.get("cultural_group") or cf.get("Cultural group", ""),
