@@ -1,6 +1,6 @@
 # Data update report
 
-Updated 2026-09-18T16:44:35Z
+Updated 2026-09-18T17:38:08Z
 
 ## Summary
 
@@ -18,7 +18,7 @@ Updated 2026-09-18T16:44:35Z
 - Skins & Leather: 36
 - Spindles: 20
 - Felt & Fibre: 35
-- Tuyrlyk Bau: 10
+- Shi: 10
 - Craft Videos: 25
 - Interviews: 14
 - Behind The Scenes: 42
