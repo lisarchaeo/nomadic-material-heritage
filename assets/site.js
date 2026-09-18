@@ -4,7 +4,7 @@
    address, so any view can be shared. */
 
 const PER_PAGE = 24;
-const FEATURED_UID = "";   // put a Unique ID here to fix the home page photo
+const FEATURED_UID = "2021SG06-C04-1293";   // Unique ID of the home page photo
 
 const CATEGORY_COLOURS = {
   "Syrmaq": ["#B8321F", "#fff"],
@@ -25,6 +25,7 @@ const STRINGS = {
     photographer: "All photographers", maker: "Maker", place_row: "Place",
     household_row: "Household", group: "Cultural group", date: "Date taken",
     unavailable: "Unavailable", photo_by: "Photo", video_by: "Film",
+    contributors: "Contributors",
     licence: "Licence", showing: "Showing {n} items", showing_one: "Showing 1 item",
     of: "{n} of {m} in this view", copied: "Link copied", no_preview:
       "This item has no preview in the repository. Open it there to see the original.",
@@ -253,7 +254,8 @@ function drawGrid() {
     title.textContent = text(item, "title");
     const meta = document.createElement("span");
     meta.className = "meta";
-    meta.textContent = [item.place && item.place.en, item.categories[0], item.credit && `${t("photo_by")}: ${item.credit}`]
+    const by = item.type === "video" ? t("video_by") : t("photo_by");
+    meta.textContent = [item.place && item.place.en, item.categories[0], item.credit && `${by}: ${item.credit}`]
       .filter(Boolean).join(" · ");
     card.append(frame, title, meta);
     card.addEventListener("click", () => showItem(item.uid, true));
@@ -264,8 +266,16 @@ function drawGrid() {
     const featured = state.items.find((i) => i.uid === FEATURED_UID) ||
       state.items.find((i) => i.type === "photo" && i.grid);
     if (featured) {
-      $("hero-img").src = featured.preview || featured.grid;
-      $("hero-img").alt = text(featured, "title");
+      const img = $("hero-img");
+      img.src = featured.grid || featured.preview;
+      // phones load the small grid image; wide screens the large preview
+      if (featured.preview && featured.grid) {
+        img.srcset = `${featured.grid} 700w, ${featured.preview} 2000w`;
+        img.sizes = "100vw";
+      }
+      img.alt = text(featured, "title");
+      $("hero-credit").textContent = featured.credit
+        ? `${text(featured, "title")} · ${t("photo_by")}: ${featured.credit}` : "";
     }
   }
 }
@@ -349,6 +359,7 @@ function showItem(uid, push) {
 
   const rows = [
     [t("maker"), item.maker || t("unavailable")],
+    [t("contributors"), item.contributors],
     [t("place_row"), item.place && item.place.en ? placeLabel(item.place) : ""],
     [t("household_row"), item.household],
     [t("group"), item.cultural_group],
