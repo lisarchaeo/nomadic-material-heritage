@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-18T14:30:26Z",
+ "generated": "2026-09-18T14:40:39Z",
  "count": 1272,
  "categories": [
   "Syrmaq",
@@ -2350,7 +2350,9 @@
     "kk": "Киіз үйдің сыртындағы жабдықтар",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Behind The Scenes"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -2388,7 +2390,9 @@
     "kk": "термелер [басқұр, туырлық бау]",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Terme"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -2426,7 +2430,9 @@
     "kk": "термелер [туырлық бау]",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Terme"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -2464,7 +2470,9 @@
     "kk": "Есіктің айналасына термелер ілу [таяныш]",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Terme"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -2502,7 +2510,9 @@
     "kk": "термелер [басқұр]",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Terme"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -2578,7 +2588,9 @@
     "kk": "Екі керегені қосып бекіту үшін қолданылатын арқан баулар [кереге бау]",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Syrmaq"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
