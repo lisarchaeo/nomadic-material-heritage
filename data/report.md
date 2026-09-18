@@ -1,6 +1,6 @@
 # Data update report
 
-Updated 2026-09-18T14:40:39Z
+Updated 2026-09-18T14:42:33Z
 
 ## Summary
 
@@ -19,14 +19,13 @@ Updated 2026-09-18T14:40:39Z
 - Spindles: 21
 - Craft Videos: 25
 - Interviews: 13
-- Behind The Scenes: 22
-- No category: 60
+- Behind The Scenes: 23
+- No category: 59
 
-## Needs a category (60)
+## Needs a category (59)
 
 - 2021SG06-B01-0759
 - 2021SG06-B11-0805
-- 2021SG06-B15-0786
 - 2021SG06-B16-0254
 - 2021SG06-B16-0794
 - 2021SG06-B16-0795
