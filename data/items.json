@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-18T14:15:40Z",
+ "generated": "2026-09-18T14:20:07Z",
  "count": 1272,
  "categories": [
   "Syrmaq",
@@ -904,7 +904,9 @@
     "kk": "Өрмек",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Terme"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -942,7 +944,9 @@
     "kk": "Өрмек",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Terme"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -1220,7 +1224,9 @@
     "kk": "Тоқу",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Terme"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -1258,7 +1264,9 @@
     "kk": "Өрнекті теру",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Terme"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -1296,7 +1304,9 @@
     "kk": "Өрнекті теру",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Terme"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
