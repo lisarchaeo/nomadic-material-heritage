@@ -61,7 +61,7 @@ WORKERS = 4              # parallel downloads; kept low to be polite
 # Display order matters: this is the order of the craft buttons.
 CATEGORIES = [
     "Syrmaq", "Tus Kiiz", "Terme", "Skins & Leather", "Spindles",
-    "Felt & Fibre", "Tuyrlyk Bau",
+    "Felt & Fibre", "Shi",
     "Craft Videos", "Interviews", "Behind The Scenes",
 ]
 
@@ -76,8 +76,8 @@ CATEGORY_HINTS = {
     "Felt & Fibre": ["felting", "felt making", "making felt", "felt blanket", "rolling felt",
                      "carding", "dye", "dyeing", "dyed", "spinning", "horsehair", "horse hair",
                      "киіз басу", "иіру"],
-    "Tuyrlyk Bau": ["reed", "reed screen", "tuyrlyk", "tuyrlyk bau", "tuurlyk", "shym shi",
-                    "chiy", "шым ши"],
+    "Shi": ["reed", "reed screen", "shi", "shym shi", "chiy", "tuyrlyk", "tuyrlyk bau",
+            "tuurlyk", "шым ши"],
     "Behind The Scenes": ["work in progress", "behind the scenes", "collecting data",
                           "fieldwork", "field work", "documentation", "photographing",
                           "filming", "ger interior", "yurt interior", "interior of",
@@ -99,6 +99,9 @@ CORRECTABLE = {
     "credit", "maker", "contributors", "household", "place", "date",
     "cultural_group", "frame_time", "hide", "show_sensitive",
 }
+
+# old name -> current name, applied to categories.csv when it is read
+RENAMED_CATEGORIES = {"tuyrlyk bau": "Shi"}
 
 CATEGORY_COLUMNS = ["unique_id", "figshare_id", "type", "title", "keywords",
                     "participants_in_repository", "suggested_category",
@@ -455,12 +458,16 @@ def main():
                 row["category"] = "; ".join(suggestion)
 
         chosen = []
+        for old_name, new_name in RENAMED_CATEGORIES.items():
+            row["category"] = re.sub(r"(?i)(?<![\w])" + re.escape(old_name) + r"(?![\w])",
+                                     new_name, row["category"])
         for c in re.split(r"[;,]", row["category"]):
             c = c.strip()
             if not c:
                 continue
-            if c.lower() in cat_lookup:
-                chosen.append(cat_lookup[c.lower()])
+            key = RENAMED_CATEGORIES.get(c.lower(), c).lower()
+            if key in cat_lookup:
+                chosen.append(cat_lookup[key])
             else:
                 unknown_cats.append((uid, c))
         chosen = [c for c in CATEGORIES if c in chosen]
