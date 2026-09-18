@@ -1,12 +1,14 @@
 {
- "generated": "2026-09-18T14:47:37Z",
- "count": 1272,
+ "generated": "2026-09-18T15:33:31Z",
+ "count": 1273,
  "categories": [
   "Syrmaq",
   "Tus Kiiz",
   "Terme",
   "Skins & Leather",
   "Spindles",
+  "Felt & Fibre",
+  "Tuyrlyk Bau",
   "Craft Videos",
   "Interviews",
   "Behind The Scenes"
@@ -91,6 +93,46 @@
    "poster": "media/stills/32034927.jpg",
    "preview": "https://drs.britishmuseum.org/ndownloader/files/63795210/preview/63795210/video_preview.mp4",
    "embed": "https://widgets.figshare.com/articles/32034927/embed?show_title=1"
+  },
+  {
+   "id": 32033979,
+   "uid": "2021SG06-A03-1259",
+   "type": "video",
+   "title": {
+    "en": "Interview with Shakim",
+    "kk": "Шәкіммен сұхбат",
+    "mn": ""
+   },
+   "description": {
+    "en": "Interview with Dasim Shakim, born 1954. Shakim describes how she grew up and learned to make syrmaqs from her mother. She tells severals stories from her childhood: how her parents collected wool shorn from the heads and legs of state-owned sheep to make the syrmaqs for her tösek oryn; how people used to leave their syrmaqs behind when moving camp in heavy snow and search for them later after it melted. She also describes her own tösek oryn and the tösek oryns she prepared for her daughters.",
+    "kk": "Дасым Шәкіммен сұхбат 1954 жылы туған. Шәкім қалай өскені, сырмақ тігүді анасынан қалай үйренгені туралы әңгімелесті. Олбалалықшағынан біназоқиғаны ескеалады. Ата анасы мемлекеттік меншігіндегі қойларды баққан. Анасы қойдың бас аяқтарының терісінің жүнін қырқып алып жинақтап оның төсек орнына арнаған сырмақтарды жасағанын, және қыста қар мол жауған кезде қардың астына тастап кетіп қар еріген кезде жинақтап алатынын әңгімелесті. Шәкім өзінің төсек орны қалай берілген туралы және өзінің қыздарының төсек орнын қалай дайындағаны туралы айтып берді.",
+    "mn": ""
+   },
+   "categories": [
+    "Interviews"
+   ],
+   "credit": "Kristen Pearson",
+   "maker": "",
+   "household": "",
+   "place": {
+    "key": "sagsai center",
+    "en": "Sagsai center",
+    "kk": "Сагсай орталығы",
+    "mn": "",
+    "province": "Bayan Ölgii"
+   },
+   "cultural_group": "Kazakh",
+   "date": "2023-04-28",
+   "doi_url": "https://doi.org/10.25420/britishmuseum.32033979.v1",
+   "repository_url": "https://drs.britishmuseum.org/articles/media/Interview_with_Shakim/32033979",
+   "licence": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+   },
+   "grid": null,
+   "poster": null,
+   "preview": null,
+   "embed": "https://widgets.figshare.com/articles/32033979/embed?show_title=1"
   },
   {
    "id": 32033754,
@@ -2550,7 +2592,9 @@
     "kk": "Шаңырақ киізіне бекітілген тоқыма [туырлық бау]; кереге мен қабырға киізінің арасына қойылған ши/қамыс бүршік..",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Tuyrlyk Bau"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -3233,7 +3277,9 @@
     "kk": "Өрнек үлгісі бойынша орналастырылған оралған қамыс шоғырлары",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Tuyrlyk Bau"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -3461,7 +3507,9 @@
     "kk": "Ши істеу",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Tuyrlyk Bau"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -6371,7 +6419,9 @@
     "kk": "Түйе мен ботасы. 2023 жылдың мамыр айы, Даян көлінің маңы.",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Behind The Scenes"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",
@@ -6409,7 +6459,9 @@
     "kk": "Ескі киіз бен басқа қайта пайдаланылған маталардан жасалған көрпелерді жамылған боталар. 2023 жылдың мамыр айының басы, Даян көлінің маңы.",
     "mn": ""
    },
-   "categories": [],
+   "categories": [
+    "Behind The Scenes"
+   ],
    "credit": "Kristen Pearson",
    "maker": "",
    "household": "",

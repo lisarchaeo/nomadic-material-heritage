@@ -1,14 +1,14 @@
 # Data update report
 
-Updated 2026-09-18T14:47:37Z
+Updated 2026-09-18T15:33:31Z
 
 ## Summary
 
 - Items in the repository: 1349
-- Items shown on the site: 1272 (photo: 1236, video: 36)
-- Not shown because of their type: 76 dataset, 1 media
-- New items this update: 0
-- Rows in categories.csv not yet marked reviewed: 1272
+- Items shown on the site: 1273 (photo: 1236, video: 37)
+- Not shown because of their type: 76 dataset
+- New items this update: 1
+- Rows in categories.csv not yet marked reviewed: 1273
 
 ## Items per category
 
@@ -17,22 +17,21 @@ Updated 2026-09-18T14:47:37Z
 - Terme: 30
 - Skins & Leather: 36
 - Spindles: 21
+- Felt & Fibre: 0
+- Tuyrlyk Bau: 3
 - Craft Videos: 25
-- Interviews: 13
-- Behind The Scenes: 23
-- No category: 57
+- Interviews: 14
+- Behind The Scenes: 25
+- No category: 52
 
-## Needs a category (57)
+## Needs a category (52)
 
 - 2021SG06-B01-0759
-- 2021SG06-B11-0805
-- 2021SG06-B16-0254
 - 2021SG06-B16-0794
 - 2021SG06-B16-0795
 - 2021SG06-B16-0796
 - 2021SG06-B16-0797
 - 2021SG06-B16-0798
-- 2021SG06-B16-0799
 - 2021SG06-B18-0323
 - 2021SG06-B18-0810
 - 2021SG06-B18-0811
@@ -77,8 +76,6 @@ Updated 2026-09-18T14:47:37Z
 - 2021SG06-C02-0872
 - 2021SG06-C02-0873
 - 2021SG06-C03-0876
-- 2021SG06-C03-0877
-- 2021SG06-C03-0878
 - 2021SG06-C03-1266
 - 2021SG06-I03-1132
 
@@ -90,7 +87,11 @@ None.
 
 None.
 
-## Preview could not be made (item view uses the embed player) (0)
+## Preview could not be made (item view uses the embed player) (1)
+
+- 2021SG06-A03-1259 Interview with Shakim (video): no frame
+
+## Not shown: file type not recognised (0)
 
 None.
 
