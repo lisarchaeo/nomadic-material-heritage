@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nomadic Material Heritage</title>
+<meta name="description" content="Photographs, films and interviews documenting textile and hide crafts in Bayan-Ölgii, Western Mongolia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600&family=Golos+Text:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main" data-t="skip">Skip to the collection</a>
+
+<div class="stripe" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<header class="shell masthead">
+  <a class="wordmark" href="./">Nomadic Material Heritage</a>
+  <nav class="nav" aria-label="Main">
+    <a href="./" data-t="nav_collection">Collection</a>
+    <a href="crafts.html" data-t="nav_crafts">Crafts</a>
+    <a href="makers.html" data-t="nav_makers">Makers</a>
+    <a href="community.html" data-t="nav_community">Community responses</a>
+    <a href="about.html" data-t="nav_about">About</a>
+    <div class="langs" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="kk" aria-pressed="false">Қазақша</button>
+      <button type="button" data-lang="mn" aria-pressed="false">Монгол</button>
+    </div>
+  </nav>
+</header>
+
+<section class="shell hero" id="hero">
+  <div class="hero-photo"><img id="hero-img" alt=""></div>
+  <div class="hero-text">
+    <h1 data-t="hero_title">Textile and hide crafts of Western Mongolia</h1>
+    <p data-t="hero_blurb">Photographs, films and interviews documenting syrmaqs, tus kiiz, terme and animal skin garments made by Kazakh and Uriankhai makers in Bayan-Ölgii.</p>
+  </div>
+</section>
+
+<main id="main" class="shell">
+  <p class="notice" id="translation-notice" hidden data-t="mt_notice">Some of this page is translated automatically and is still being checked. Corrections are welcome.</p>
+
+  <section class="filters" aria-labelledby="browse-heading">
+    <h2 id="browse-heading" data-t="browse_by_craft">Browse by craft</h2>
+    <div class="chips" id="chips"></div>
+    <div class="selects">
+      <div>
+        <select id="place" aria-label="Place"></select>
+        <select id="household" aria-label="Household"></select>
+        <select id="photographer" aria-label="Photographer"></select>
+        <button type="button" class="reset" id="reset" data-t="clear_filters">Clear filters</button>
+      </div>
+      <p class="count" id="count" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty" hidden data-t="no_items">Nothing matches these filters. Try removing one, or choose All.</p>
+  <nav class="pager" id="pager" aria-label="Pages"></nav>
+</main>
+
+<footer class="shell">
+  <p data-t="footer">Material from the Endangered Material Knowledge Programme, British Museum, under a Creative Commons BY-NC-SA 4.0 licence. Each item credits its photographer and links to the repository.</p>
+</footer>
+
+<div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="item-title">
+  <div class="sheet">
+    <div class="stage" id="stage">
+      <button type="button" class="arrow prev" id="prev" aria-label="Previous item">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3 5 9l6 6"/></svg>
+      </button>
+      <button type="button" class="arrow next" id="next" aria-label="Next item">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 3 6 6-6 6"/></svg>
+      </button>
+      <p class="counter" id="counter"></p>
+    </div>
+    <div class="details">
+      <div class="top">
+        <span class="cat-tag" id="item-cat"></span>
+        <button type="button" class="icon-btn" id="close" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l10 10M13 3 3 13"/></svg>
+        </button>
+      </div>
+      <h2 id="item-title"></h2>
+      <p class="desc" id="item-desc"></p>
+      <div class="mobile-nav">
+        <button type="button" data-nav="prev" data-t="previous">← Previous</button>
+        <button type="button" data-nav="next" data-t="next">Next →</button>
+      </div>
+      <dl class="rows" id="item-rows"></dl>
+      <div class="credit" id="item-credit"></div>
+      <div class="actions">
+        <a class="primary" id="item-doi" href="#" target="_blank" rel="noopener" data-t="view_repository">View in the British Museum repository ↗</a>
+        <button type="button" class="secondary" id="copy" data-t="copy_link">Copy link to this item</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/site.js"></script>
+</body>
+</html>
