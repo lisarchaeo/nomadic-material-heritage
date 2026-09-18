@@ -1,53 +1,35 @@
 # Data update report
 
-Updated 2026-09-18T09:29:05Z
+Updated 2026-09-18T14:15:40Z
 
 ## Summary
 
 - Items in the repository: 1349
 - Items shown on the site: 1272 (photo: 1236, video: 36)
 - Not shown because of their type: 76 dataset, 1 media
-- New items this update: 1272
+- New items this update: 0
 - Rows in categories.csv not yet marked reviewed: 1272
 
 ## Items per category
 
 - Syrmaq: 927
 - Tus Kiiz: 151
-- Terme: 3
+- Terme: 21
 - Skins & Leather: 33
 - Spindles: 20
 - Craft Videos: 25
 - Interviews: 13
 - Behind The Scenes: 20
-- No category: 96
+- No category: 78
 
-## Needs a category (96)
+## Needs a category (78)
 
-- 2021SG06-B01-0752
-- 2021SG06-B01-0753
-- 2021SG06-B01-0754
-- 2021SG06-B01-0755
-- 2021SG06-B01-0756
-- 2021SG06-B01-0757
-- 2021SG06-B01-0758
 - 2021SG06-B01-0759
-- 2021SG06-B01-0760
-- 2021SG06-B01-0761
-- 2021SG06-B01-0762
 - 2021SG06-B01-0763
 - 2021SG06-B01-0764
-- 2021SG06-B01-0765
-- 2021SG06-B01-0766
-- 2021SG06-B01-0767
-- 2021SG06-B01-0768
-- 2021SG06-B01-0769
-- 2021SG06-B01-0770
 - 2021SG06-B01-0771
 - 2021SG06-B01-0772
 - 2021SG06-B01-0773
-- 2021SG06-B01-0774
-- 2021SG06-B01-0775
 - 2021SG06-B04-0779
 - 2021SG06-B04-0780
 - 2021SG06-B04-0782
