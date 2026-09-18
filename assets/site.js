@@ -13,11 +13,14 @@ const CATEGORY_COLOURS = {
   "Skins & Leather": ["#1E2A4A", "#fff"],
   "Spindles": ["#4A7A2E", "#fff"],
   "Felt & Fibre": ["#5F7A6B", "#fff"],
-  "Tuyrlyk Bau": ["#2F6D8F", "#fff"],
+  "Shi": ["#2F6D8F", "#fff"],
   "Craft Videos": ["#6A4A7A", "#fff"],
   "Interviews": ["#8A3B5C", "#fff"],
   "Behind The Scenes": ["#7D6340", "#fff"],
 };
+
+// buttons that are not a craft: shown in a lighter style
+const UTILITY_BUTTONS = ["Craft Videos", "Interviews", "Behind The Scenes"];
 
 const STRINGS = {
   en: {
@@ -103,7 +106,7 @@ function buildChips() {
 function chip(label, value, colours) {
   const b = document.createElement("button");
   b.type = "button";
-  b.className = "chip";
+  b.className = "chip" + (!value || UTILITY_BUTTONS.includes(value) ? " util" : "");
   b.textContent = label;
   b.dataset.craft = value;
   if (colours) {
