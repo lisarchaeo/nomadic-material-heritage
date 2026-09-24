@@ -107,8 +107,8 @@ CATEGORY_COLUMNS = ["unique_id", "figshare_id", "type", "title", "keywords",
                     "participants_in_repository", "suggested_category",
                     "category", "household", "maker", "reviewed", "notes"]
 CORRECTION_COLUMNS = ["unique_id", "field", "value", "note"]
-PLACE_COLUMNS = ["place_in_repository", "display_en", "display_kk", "display_mn",
-                 "province"]
+PLACE_COLUMNS = ["place_in_repository", "sum_en", "sum_kk", "place_en", "place_kk",
+                 "place_mn", "aimag"]
 
 log_lines = []
 
@@ -297,17 +297,30 @@ def suggest_categories(rec, kind):
 
 
 def split_place(raw):
-    """'Tsagaannuur Tosgon/Цагааннуур тосгон, Bayan Ölgii' -> parts."""
+    """Repository places read: sum, then bag or a smaller place if there is one,
+    then the aimag. Each part may be written 'English/Қазақша'.
+    'Bulgan Sum center/Бұлғын сұмын орталығы, Bayan Ölgii' ->
+        sum: (Bulgan Sum center, Бұлғын сұмын орталығы)
+        detail: ("", "")
+        aimag: Bayan Ölgii
+    """
     raw = (raw or "").strip()
     if not raw:
-        return "", "", ""
-    main, province = raw, ""
-    if ", " in raw:
-        main, province = raw.rsplit(", ", 1)
-    en, kk = main, ""
-    if "/" in main:
-        en, kk = main.split("/", 1)
-    return en.strip(), kk.strip(), province.strip()
+        return {"sum_en": "", "sum_kk": "", "place_en": "", "place_kk": "", "aimag": ""}
+    parts = [p.strip() for p in raw.split(",") if p.strip()]
+    aimag = parts.pop() if len(parts) > 1 else ""
+    halves = []
+    for part in parts:
+        en, kk = (part.split("/", 1) + [""])[:2] if "/" in part else (part, "")
+        halves.append((en.strip(), kk.strip()))
+    sum_en, sum_kk = halves[0] if halves else ("", "")
+    rest = halves[1:]
+    return {
+        "sum_en": sum_en, "sum_kk": sum_kk,
+        "place_en": ", ".join(h[0] for h in rest if h[0]),
+        "place_kk": ", ".join(h[1] for h in rest if h[1]),
+        "aimag": aimag,
+    }
 
 
 # ---------------------------------------------------------------- images
@@ -472,20 +485,24 @@ def main():
                 unknown_cats.append((uid, c))
         chosen = [c for c in CATEGORIES if c in chosen]
 
-        # place
+        # place: sum, then a smaller place if the record names one, then aimag
         place_raw = fix.get("place") or cf.get("Place", "")
-        en, kk, province = split_place(place_raw)
-        prow = places.get(norm(en))
-        if en and prow is None:
-            prow = {"place_in_repository": en, "display_en": en, "display_kk": kk,
-                    "display_mn": "", "province": province}
-            places[norm(en)] = prow
+        parsed = split_place(place_raw)
+        prow = places.get(norm(place_raw))
+        if place_raw and prow is None:
+            prow = {"place_in_repository": place_raw, "sum_en": parsed["sum_en"],
+                    "sum_kk": parsed["sum_kk"], "place_en": parsed["place_en"],
+                    "place_kk": parsed["place_kk"], "place_mn": "", "aimag": parsed["aimag"]}
+            places[norm(place_raw)] = prow
         place = {
-            "key": norm(prow["display_en"]) if prow else "",
-            "en": prow["display_en"] if prow else "",
-            "kk": (prow["display_kk"] or kk) if prow else "",
-            "mn": prow["display_mn"] if prow else "",
-            "province": (prow["province"] or province) if prow else "",
+            "sum": prow["sum_en"] if prow else "",
+            "sum_kk": prow["sum_kk"] if prow else "",
+            "sum_key": norm(prow["sum_en"]) if prow else "",
+            "en": prow["place_en"] if prow else "",
+            "kk": prow["place_kk"] if prow else "",
+            "mn": prow["place_mn"] if prow else "",
+            "key": norm((prow["sum_en"] + "|" + prow["place_en"])) if prow else "",
+            "aimag": prow["aimag"] if prow else "",
         }
 
         credit = fix.get("credit") or nice_name(rec["authors"][0] if rec["authors"] else "")
@@ -594,7 +611,8 @@ def main():
     write_csv(CATEGORIES_CSV, CATEGORY_COLUMNS, ordered_rows)
     if not os.path.exists(CORRECTIONS_CSV):
         write_csv(CORRECTIONS_CSV, CORRECTION_COLUMNS, [])
-    write_csv(PLACES_CSV, PLACE_COLUMNS, sorted(places.values(), key=lambda r: norm(r["place_in_repository"])))
+    write_csv(PLACES_CSV, PLACE_COLUMNS,
+              sorted(places.values(), key=lambda r: (norm(r["sum_en"]), norm(r["place_en"]))))
 
     cache["updated"] = now_iso()
     with open(CACHE_JSON, "w", encoding="utf-8") as fh:
