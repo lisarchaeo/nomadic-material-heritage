@@ -98,6 +98,16 @@ img { max-width: 100%; display: block; }
   background: #fff; color: var(--ink); max-width: 260px;
 }
 .count { font-size: 14px; color: var(--muted); }
+.search input {
+  padding: 11px 14px; border: 1.5px solid var(--line); border-radius: var(--radius);
+  background: #fff; font: inherit; color: var(--ink); min-width: 240px;
+}
+.search input:focus-visible { outline: 2px solid var(--navy); outline-offset: 1px; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+select:disabled { color: var(--muted); background: #F2EFE8; }
 .reset { padding: 11px 14px; border: 1.5px solid var(--line); border-radius: var(--radius); background: #fff; }
 
 /* grid ----------------------------------------------------------------- */

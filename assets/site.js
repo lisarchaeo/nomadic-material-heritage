@@ -24,7 +24,10 @@ const UTILITY_BUTTONS = ["Craft Videos", "Interviews", "Behind The Scenes"];
 
 const STRINGS = {
   en: {
-    all: "All", place: "All places", household: "All households",
+    all: "All", place: "All places", sum: "All sums", household: "All households",
+    search_placeholder: "Search names, places, titles…",
+    search_label: "Search the collection",
+    cleared: "Search cleared",
     photographer: "All photographers", maker: "Maker", place_row: "Place",
     household_row: "Household", group: "Cultural group", date: "Date taken",
     unavailable: "Unavailable", photo_by: "Photo", video_by: "Film",
@@ -48,7 +51,7 @@ const state = {
   categories: [],
   filtered: [],
   crafts: new Set(),
-  place: "", household: "", photographer: "",
+  q: "", sum: "", place: "", household: "", photographer: "",
   page: 1,
   open: null,
 };
@@ -124,21 +127,63 @@ function chip(label, value, colours) {
 }
 
 function buildSelects() {
-  const places = new Map(), households = new Set(), photographers = new Set();
+  const sums = new Map(), households = new Set(), photographers = new Set();
+  state.places = new Map();
   state.items.forEach((i) => {
-    if (i.place && i.place.key) places.set(i.place.key, i.place);
+    const p = i.place || {};
+    if (p.sum_key && !sums.has(p.sum_key)) sums.set(p.sum_key, p);
+    if (p.key && p.en && !state.places.has(p.key)) state.places.set(p.key, p);
     if (i.household) households.add(i.household);
     if (i.credit) photographers.add(i.credit);
   });
-  fill($("place"), t("place"), [...places.values()]
-    .sort((a, b) => a.en.localeCompare(b.en))
-    .map((p) => [p.key, placeLabel(p)]));
+  fill($("sum"), t("sum"), [...sums.values()]
+    .sort((a, b) => sumName(a).localeCompare(sumName(b)))
+    .map((p) => [p.sum_key, sumName(p)]));
+  fillPlaces();
   fill($("household"), t("household"), [...households].sort().map((h) => [h, h]));
   fill($("photographer"), t("photographer"), [...photographers].sort().map((p) => [p, p]));
+
+  $("sum").addEventListener("change", () => {
+    state.sum = $("sum").value;
+    state.place = "";
+    fillPlaces();
+    state.page = 1;
+    apply(true);
+  });
   [["place", "place"], ["household", "household"], ["photographer", "photographer"]]
     .forEach(([id, key]) => $(id).addEventListener("change", () => {
       state[key] = $(id).value; state.page = 1; apply(true);
     }));
+
+  let timer;
+  $("q").addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      state.q = $("q").value.trim();
+      state.page = 1;
+      apply(false);
+    }, 200);
+  });
+}
+
+/* the second dropdown only lists places inside the chosen sum */
+function fillPlaces() {
+  const select = $("place");
+  const inside = [...state.places.values()]
+    .filter((p) => !state.sum || p.sum_key === state.sum)
+    .sort((a, b) => placeName(a).localeCompare(placeName(b)));
+  fill(select, t("place"), inside.map((p) => [p.key,
+    state.sum ? placeName(p) : `${placeName(p)} · ${sumName(p)}`]));
+  select.value = state.place;
+  select.disabled = inside.length === 0;
+}
+
+function sumName(p) {
+  return (state.lang !== "en" && p.sum_kk) || p.sum || "";
+}
+
+function placeName(p) {
+  return (state.lang !== "en" && p[state.lang]) || p.en || "";
 }
 
 function fill(select, blank, pairs) {
@@ -155,15 +200,18 @@ function fill(select, blank, pairs) {
   select.value = current;
 }
 
+/* the full place, as written on an item: place, sum, aimag */
 function placeLabel(p) {
-  const name = (state.lang !== "en" && p[state.lang]) || p.en;
-  return p.province ? `${name}, ${p.province}` : name;
+  if (!p) return "";
+  return [placeName(p), sumName(p), p.aimag].filter(Boolean).join(", ");
 }
 
 function clearFilters() {
   state.crafts.clear();
-  state.place = state.household = state.photographer = "";
-  $("place").value = $("household").value = $("photographer").value = "";
+  state.q = state.sum = state.place = state.household = state.photographer = "";
+  $("q").value = "";
+  $("sum").value = $("household").value = $("photographer").value = "";
+  fillPlaces();
   state.page = 1;
   apply(true);
 }
@@ -172,6 +220,8 @@ function clearFilters() {
 function readAddress() {
   const p = new URLSearchParams(location.search);
   state.crafts = new Set((p.get("craft") || "").split(",").filter(Boolean));
+  state.q = p.get("q") || "";
+  state.sum = p.get("sum") || "";
   state.place = p.get("place") || "";
   state.household = p.get("household") || "";
   state.photographer = p.get("photographer") || "";
@@ -179,6 +229,9 @@ function readAddress() {
   state.open = p.get("item") || null;
   const lang = p.get("lang");
   if (lang && STRINGS[lang]) state.lang = lang;
+  $("q").value = state.q;
+  $("sum").value = state.sum;
+  if (state.items.length) fillPlaces();
   $("place").value = state.place;
   $("household").value = state.household;
   $("photographer").value = state.photographer;
@@ -187,6 +240,8 @@ function readAddress() {
 function writeAddress(push) {
   const p = new URLSearchParams();
   if (state.crafts.size) p.set("craft", [...state.crafts].join(","));
+  if (state.q) p.set("q", state.q);
+  if (state.sum) p.set("sum", state.sum);
   if (state.place) p.set("place", state.place);
   if (state.household) p.set("household", state.household);
   if (state.photographer) p.set("photographer", state.photographer);
@@ -198,13 +253,47 @@ function writeAddress(push) {
   else history.replaceState({}, "", url);
 }
 
+/* ---------------------------------------------------------------- search */
+/* Accents and case are ignored, so "Olgii" finds "Ölgii". Every word typed
+   must appear somewhere in the item, in any order. */
+function flatten(value) {
+  return String(value || "").toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function searchWords(q) {
+  return flatten(q).split(/\s+/).filter(Boolean);
+}
+
+function haystack(item) {
+  if (!item._hay) {
+    const p = item.place || {};
+    item._hay = flatten([
+      item.title.en, item.title.kk, item.title.mn,
+      item.description.en, item.description.kk, item.description.mn,
+      item.maker, item.contributors, item.household, item.credit,
+      p.en, p.kk, p.mn, p.sum, p.sum_kk, p.aimag,
+      item.cultural_group, item.date, item.uid, item.categories.join(" "),
+    ].filter(Boolean).join(" \u00b7 "));
+  }
+  return item._hay;
+}
+
+function matches(item, needles) {
+  const hay = haystack(item);
+  return needles.every((w) => hay.includes(w));
+}
+
 /* ---------------------------------------------------------------- render */
 function apply(push) {
+  const needles = searchWords(state.q);
   state.filtered = state.items.filter((i) =>
     (!state.crafts.size || i.categories.some((c) => state.crafts.has(c))) &&
+    (!state.sum || (i.place && i.place.sum_key === state.sum)) &&
     (!state.place || (i.place && i.place.key === state.place)) &&
     (!state.household || i.household === state.household) &&
-    (!state.photographer || i.credit === state.photographer));
+    (!state.photographer || i.credit === state.photographer) &&
+    (!needles.length || matches(i, needles)));
 
   const pages = Math.max(1, Math.ceil(state.filtered.length / PER_PAGE));
   if (state.page > pages) state.page = pages;
@@ -216,8 +305,8 @@ function apply(push) {
 
   const n = state.filtered.length;
   $("count").textContent = n === 1 ? t("showing_one") : t("showing", { n });
-  $("hero").hidden = state.crafts.size > 0 || !!state.place || !!state.household ||
-    !!state.photographer || state.page > 1;
+  $("hero").hidden = state.crafts.size > 0 || !!state.q || !!state.sum || !!state.place ||
+    !!state.household || !!state.photographer || state.page > 1;
 
   drawGrid();
   drawPager(pages);
@@ -262,7 +351,8 @@ function drawGrid() {
     const meta = document.createElement("span");
     meta.className = "meta";
     const by = item.type === "video" ? t("video_by") : t("photo_by");
-    meta.textContent = [item.place && item.place.en, item.categories[0], item.credit && `${by}: ${item.credit}`]
+    const where = item.place ? (placeName(item.place) || sumName(item.place)) : "";
+    meta.textContent = [where, item.categories[0], item.credit && `${by}: ${item.credit}`]
       .filter(Boolean).join(" · ");
     card.append(frame, title, meta);
     card.addEventListener("click", () => showItem(item.uid, true));
@@ -371,7 +461,7 @@ function showItem(uid, push) {
   const rows = [
     [t("maker"), item.maker || t("unavailable")],
     [t("contributors"), item.contributors],
-    [t("place_row"), item.place && item.place.en ? placeLabel(item.place) : ""],
+    [t("place_row"), placeLabel(item.place)],
     [t("household_row"), item.household],
     [t("group"), item.cultural_group],
     [t("date"), item.date],
@@ -433,6 +523,10 @@ function setLanguage(lang) {
   document.documentElement.lang = lang;
   document.querySelectorAll("[data-lang]").forEach((b) =>
     b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+  document.querySelectorAll("[data-t-placeholder]").forEach((el) => {
+    const s2 = STRINGS[lang] && STRINGS[lang][el.dataset.tPlaceholder];
+    if (s2) el.placeholder = s2;
+  });
   document.querySelectorAll("[data-t]").forEach((el) => {
     const key = el.dataset.t;
     const s = STRINGS[lang] && STRINGS[lang][key];
