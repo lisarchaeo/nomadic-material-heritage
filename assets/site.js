@@ -138,7 +138,7 @@ function buildSelects() {
   });
   fill($("sum"), t("sum"), [...sums.values()]
     .sort((a, b) => sumName(a).localeCompare(sumName(b)))
-    .map((p) => [p.sum_key, sumName(p)]));
+    .map((p) => [p.sum_key, [sumName(p), p.aimag].filter(Boolean).join(", ")]));
   fillPlaces();
   fill($("household"), t("household"), [...households].sort().map((h) => [h, h]));
   fill($("photographer"), t("photographer"), [...photographers].sort().map((p) => [p, p]));
@@ -172,18 +172,24 @@ function fillPlaces() {
   const inside = [...state.places.values()]
     .filter((p) => !state.sum || p.sum_key === state.sum)
     .sort((a, b) => placeName(a).localeCompare(placeName(b)));
+  // sum, then any smaller place, then aimag — the order people say them in
   fill(select, t("place"), inside.map((p) => [p.key,
-    state.sum ? placeName(p) : `${placeName(p)} · ${sumName(p)}`]));
+    [sumName(p), placeName(p), p.aimag].filter(Boolean).join(", ")]));
   select.value = state.place;
   select.disabled = inside.length === 0;
 }
 
+/* Place names are shown in the language chosen at the top of the page, falling
+   back to English when that language has no name recorded. Searching is
+   unaffected: the search box looks at every language at once. */
 function sumName(p) {
-  return (state.lang !== "en" && p.sum_kk) || p.sum || "";
+  if (!p) return "";
+  return (state.lang === "en" ? p.sum : p.sum_kk || p.sum) || "";
 }
 
 function placeName(p) {
-  return (state.lang !== "en" && p[state.lang]) || p.en || "";
+  if (!p) return "";
+  return (state.lang === "en" ? p.en : p[state.lang] || p.en) || "";
 }
 
 function fill(select, blank, pairs) {
