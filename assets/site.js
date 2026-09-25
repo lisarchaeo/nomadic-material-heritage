@@ -22,9 +22,39 @@ const CATEGORY_COLOURS = {
 // buttons that are not a craft: shown in a lighter style
 const UTILITY_BUTTONS = ["Craft Videos", "Interviews", "Behind The Scenes"];
 
+// Button labels by language. The English name is the key used in the data,
+// the spreadsheet and the web address; only the label changes.
+const CATEGORY_LABELS = {
+  kk: {
+    "Syrmaq": "Сырмақ",
+    "Tus Kiiz": "Тұс киіз",
+    "Terme": "Терме",
+    "Skins & Leather": "Тері мен былғары",
+    "Spindles": "Ұршық",
+    "Felt & Fibre": "Киіз бен талшық",
+    "Shi": "Ши",
+    "Craft Videos": "Қолөнер бейнелері",
+    "Interviews": "Сұхбаттар",
+    "Behind The Scenes": "Жұмыс барысы",
+  },
+  // Mongolian: machine translation, awaiting review
+  mn: {
+    "Syrmaq": "Сырмак",
+    "Tus Kiiz": "Тус кииз",
+    "Terme": "Терме",
+    "Skins & Leather": "Арьс ширэн эдлэл",
+    "Spindles": "Ээрүүл",
+    "Felt & Fibre": "Эсгий ба утас",
+    "Shi": "Ши",
+    "Craft Videos": "Гар урлалын бичлэг",
+    "Interviews": "Ярилцлага",
+    "Behind The Scenes": "Ажлын явц",
+  },
+};
+
 const STRINGS = {
   en: {
-    all: "All", place: "All places", sum: "All sums", household: "All households",
+    all: "All", place: "All places", sum: "All sums", makers: "All makers",
     search_placeholder: "Search names, places, titles…",
     search_label: "Search the collection",
     cleared: "Search cleared",
@@ -41,8 +71,62 @@ const STRINGS = {
     not_ready: "This language is not ready yet, so the page is still in English. " +
       "Item titles appear in the language the repository recorded them in.",
   },
-  kk: {}, // filled in when the Kazakh translations are ready
-  mn: {},
+  // Kazakh: machine translation, awaiting review by a Kazakh speaker
+  kk: {
+    all: "Барлығы", place: "Барлық елді мекендер", sum: "Барлық сұмдар",
+    makers: "Барлық шеберлер", photographer: "Барлық түсірушілер",
+    search_placeholder: "Есім, жер, атау бойынша іздеу…",
+    search_label: "Жинақтан іздеу",
+    maker: "Шебері", contributors: "Қатысушылар", place_row: "Жері",
+    household_row: "Үй шаруашылығы", group: "Мәдени топ", date: "Түсірілген күні",
+    unavailable: "Қолжетімсіз", photo_by: "Сурет", video_by: "Бейне",
+    licence: "Лицензия",
+    showing: "{n} нысан көрсетілуде", showing_one: "1 нысан көрсетілуде",
+    of: "осы көріністегі {m} нысанның {n}-шісі", copied: "Сілтеме көшірілді",
+    no_preview: "Бұл нысанның қоймада алдын ала қарау нұсқасы жоқ. Түпнұсқаны қоймадан ашыңыз.",
+    next_page: "Келесі →", prev_page: "← Алдыңғы",
+    next: "Келесі →", previous: "← Алдыңғы",
+    clear_filters: "Сүзгілерді тазалау",
+    browse_by_craft: "Қолөнер бойынша қарау",
+    no_items: "Бұл сүзгілерге сәйкес нысан табылмады. Бір сүзгіні алып тастаңыз немесе «Барлығы» таңдаңыз.",
+    copy_link: "Осы нысанның сілтемесін көшіру",
+    view_repository: "Британ мұражайының қоймасынан қарау ↗",
+    skip: "Жинаққа өту",
+    nav_collection: "Жинақ", nav_crafts: "Қолөнер", nav_makers: "Шеберлер",
+    nav_community: "Қауымдастық пікірлері", nav_about: "Жоба туралы",
+    hero_title: "Батыс Моңғолиядағы тоқыма және тері қолөнері",
+    hero_blurb: "Баян-Өлгийдегі қазақ және урианхай шеберлері жасаған сырмақ, тұс киіз, терме және тері бұйымдарын құжаттаған суреттер, бейнелер мен сұхбаттар.",
+    footer: "Материал Британ мұражайының Endangered Material Knowledge Programme бағдарламасынан алынған, Creative Commons BY-NC-SA 4.0 лицензиясымен. Әр нысан түсірушісін көрсетеді және қоймадағы жазбасына сілтейді.",
+    mt_notice: "Бұл беттің бір бөлігі машиналық аударма арқылы аударылған және әлі тексерілуде. Түзетулерді қуана қабылдаймыз.",
+  },
+  // Mongolian: machine translation, awaiting review by a Mongolian speaker
+  mn: {
+    all: "Бүгд", place: "Бүх газар", sum: "Бүх сум",
+    makers: "Бүх урлаач", photographer: "Бүх гэрэл зурагчин",
+    search_placeholder: "Нэр, газар, гарчгаар хайх…",
+    search_label: "Цуглуулгаас хайх",
+    maker: "Урлаач", contributors: "Оролцогчид", place_row: "Газар",
+    household_row: "Өрх", group: "Угсаатны бүлэг", date: "Авсан огноо",
+    unavailable: "Байхгүй", photo_by: "Гэрэл зураг", video_by: "Бичлэг",
+    licence: "Лиценз",
+    showing: "{n} зүйл харуулж байна", showing_one: "1 зүйл харуулж байна",
+    of: "энэ жагсаалтын {m}-аас {n} дэх", copied: "Холбоос хуулагдлаа",
+    no_preview: "Энэ зүйлд архивын урьдчилсан хувилбар байхгүй. Эх хувийг архиваас үзнэ үү.",
+    next_page: "Дараах →", prev_page: "← Өмнөх",
+    next: "Дараах →", previous: "← Өмнөх",
+    clear_filters: "Шүүлтүүрийг арилгах",
+    browse_by_craft: "Гар урлалаар үзэх",
+    no_items: "Эдгээр шүүлтүүрт тохирох зүйл олдсонгүй. Нэг шүүлтүүрийг хасах эсвэл «Бүгд» сонгоно уу.",
+    copy_link: "Энэ зүйлийн холбоосыг хуулах",
+    view_repository: "Британийн музейн архиваас үзэх ↗",
+    skip: "Цуглуулга руу очих",
+    nav_collection: "Цуглуулга", nav_crafts: "Гар урлал", nav_makers: "Урлаачид",
+    nav_community: "Олон нийтийн хариу", nav_about: "Төслийн тухай",
+    hero_title: "Баруун Монголын нэхмэл ба арьс ширний урлал",
+    hero_blurb: "Баян-Өлгий аймгийн казах болон урианхай урлаачдын хийсэн сырмак, тус кииз, терме, арьс ширэн эдлэлийг баримтжуулсан гэрэл зураг, бичлэг, ярилцлага.",
+    footer: "Материал Британийн музейн Endangered Material Knowledge Programme-аас авсан бөгөөд Creative Commons BY-NC-SA 4.0 лицензтэй. Зүйл бүр гэрэл зурагчнаа заасан бөгөөд архив дахь бүртгэл рүү холбогдоно.",
+    mt_notice: "Энэ хуудсын зарим хэсгийг машин орчуулгаар хөрвүүлсэн бөгөөд хянагдаж байна. Залруулгыг талархан хүлээн авна.",
+  },
 };
 
 const state = {
@@ -51,12 +135,14 @@ const state = {
   categories: [],
   filtered: [],
   crafts: new Set(),
-  q: "", sum: "", place: "", household: "", photographer: "",
+  q: "", sum: "", place: "", maker: "", photographer: "",
   page: 1,
   open: null,
 };
 
 const $ = (id) => document.getElementById(id);
+const catLabel = (c) =>
+  (CATEGORY_LABELS[state.lang] && CATEGORY_LABELS[state.lang][c]) || c;
 const t = (key, vars) => {
   let s = (STRINGS[state.lang] && STRINGS[state.lang][key]) || STRINGS.en[key] || key;
   if (vars) for (const k in vars) s = s.replace("{" + k + "}", vars[k]);
@@ -103,7 +189,7 @@ function buildChips() {
   const wrap = $("chips");
   wrap.innerHTML = "";
   wrap.appendChild(chip(t("all"), "", null));
-  state.categories.forEach((c) => wrap.appendChild(chip(c, c, CATEGORY_COLOURS[c])));
+  state.categories.forEach((c) => wrap.appendChild(chip(catLabel(c), c, CATEGORY_COLOURS[c])));
 }
 
 function chip(label, value, colours) {
@@ -127,20 +213,23 @@ function chip(label, value, colours) {
 }
 
 function buildSelects() {
-  const sums = new Map(), households = new Set(), photographers = new Set();
+  const sums = new Map(), makers = new Set(), photographers = new Set();
   state.places = new Map();
   state.items.forEach((i) => {
     const p = i.place || {};
     if (p.sum_key && !sums.has(p.sum_key)) sums.set(p.sum_key, p);
-    if (p.key && p.en && !state.places.has(p.key)) state.places.set(p.key, p);
-    if (i.household) households.add(i.household);
+    // a smaller place counts even when only its Kazakh name is recorded
+    if (p.key && (p.en || p.kk || p.mn) && !state.places.has(p.key)) state.places.set(p.key, p);
+    if (i.maker) makers.add(i.maker);
     if (i.credit) photographers.add(i.credit);
   });
   fill($("sum"), t("sum"), [...sums.values()]
     .sort((a, b) => sumName(a).localeCompare(sumName(b)))
-    .map((p) => [p.sum_key, [sumName(p), p.aimag].filter(Boolean).join(", ")]));
+    .map((p) => [p.sum_key, [sumName(p), aimagName(p)].filter(Boolean).join(", ")]));
   fillPlaces();
-  fill($("household"), t("household"), [...households].sort().map((h) => [h, h]));
+  // the makers dropdown appears by itself once makers are filled in
+  fill($("maker"), t("makers"), [...makers].sort().map((m) => [m, m]));
+  $("maker").hidden = makers.size === 0;
   fill($("photographer"), t("photographer"), [...photographers].sort().map((p) => [p, p]));
 
   $("sum").addEventListener("change", () => {
@@ -150,7 +239,7 @@ function buildSelects() {
     state.page = 1;
     apply(true);
   });
-  [["place", "place"], ["household", "household"], ["photographer", "photographer"]]
+  [["place", "place"], ["maker", "maker"], ["photographer", "photographer"]]
     .forEach(([id, key]) => $(id).addEventListener("change", () => {
       state[key] = $(id).value; state.page = 1; apply(true);
     }));
@@ -174,7 +263,7 @@ function fillPlaces() {
     .sort((a, b) => placeName(a).localeCompare(placeName(b)));
   // sum, then any smaller place, then aimag — the order people say them in
   fill(select, t("place"), inside.map((p) => [p.key,
-    [sumName(p), placeName(p), p.aimag].filter(Boolean).join(", ")]));
+    [sumName(p), placeName(p), aimagName(p)].filter(Boolean).join(", ")]));
   select.value = state.place;
   select.disabled = inside.length === 0;
 }
@@ -182,15 +271,24 @@ function fillPlaces() {
 /* Place names are shown in the language chosen at the top of the page, falling
    back to English when that language has no name recorded. Searching is
    unaffected: the search box looks at every language at once. */
-function sumName(p) {
+/* Names follow the language chosen at the top of the page, falling back to
+   whatever the repository recorded when that language has no name. Searching
+   is unaffected: the search box reads every language at once. */
+function named(p, field) {
   if (!p) return "";
-  return (state.lang === "en" ? p.sum : p.sum_kk || p.sum) || "";
+  const en = p[field.en] || "";
+  const other = (state.lang === "kk" ? p[field.kk] : p[field.mn]) || "";
+  if (state.lang === "en") return en || p[field.kk] || "";
+  return other || en || p[field.kk] || "";
 }
 
-function placeName(p) {
-  if (!p) return "";
-  return (state.lang === "en" ? p.en : p[state.lang] || p.en) || "";
-}
+const SUM_FIELDS = { en: "sum", kk: "sum_kk", mn: "sum_mn" };
+const PLACE_FIELDS = { en: "en", kk: "kk", mn: "mn" };
+const AIMAG_FIELDS = { en: "aimag", kk: "aimag_kk", mn: "aimag_mn" };
+
+const sumName = (p) => named(p, SUM_FIELDS);
+const placeName = (p) => named(p, PLACE_FIELDS);
+const aimagName = (p) => named(p, AIMAG_FIELDS);
 
 function fill(select, blank, pairs) {
   const current = select.value;
@@ -209,14 +307,14 @@ function fill(select, blank, pairs) {
 /* the full place, as written on an item: place, sum, aimag */
 function placeLabel(p) {
   if (!p) return "";
-  return [placeName(p), sumName(p), p.aimag].filter(Boolean).join(", ");
+  return [sumName(p), placeName(p), aimagName(p)].filter(Boolean).join(", ");
 }
 
 function clearFilters() {
   state.crafts.clear();
-  state.q = state.sum = state.place = state.household = state.photographer = "";
+  state.q = state.sum = state.place = state.maker = state.photographer = "";
   $("q").value = "";
-  $("sum").value = $("household").value = $("photographer").value = "";
+  $("sum").value = $("maker").value = $("photographer").value = "";
   fillPlaces();
   state.page = 1;
   apply(true);
@@ -229,7 +327,7 @@ function readAddress() {
   state.q = p.get("q") || "";
   state.sum = p.get("sum") || "";
   state.place = p.get("place") || "";
-  state.household = p.get("household") || "";
+  state.maker = p.get("maker") || "";
   state.photographer = p.get("photographer") || "";
   state.page = Math.max(1, parseInt(p.get("page") || "1", 10) || 1);
   state.open = p.get("item") || null;
@@ -239,7 +337,7 @@ function readAddress() {
   $("sum").value = state.sum;
   if (state.items.length) fillPlaces();
   $("place").value = state.place;
-  $("household").value = state.household;
+  $("maker").value = state.maker;
   $("photographer").value = state.photographer;
 }
 
@@ -249,7 +347,7 @@ function writeAddress(push) {
   if (state.q) p.set("q", state.q);
   if (state.sum) p.set("sum", state.sum);
   if (state.place) p.set("place", state.place);
-  if (state.household) p.set("household", state.household);
+  if (state.maker) p.set("maker", state.maker);
   if (state.photographer) p.set("photographer", state.photographer);
   if (state.page > 1) p.set("page", state.page);
   if (state.open) p.set("item", state.open);
@@ -278,7 +376,7 @@ function haystack(item) {
       item.title.en, item.title.kk, item.title.mn,
       item.description.en, item.description.kk, item.description.mn,
       item.maker, item.contributors, item.household, item.credit,
-      p.en, p.kk, p.mn, p.sum, p.sum_kk, p.aimag,
+      p.en, p.kk, p.mn, p.sum, p.sum_kk, p.sum_mn, p.aimag, p.aimag_kk,
       item.cultural_group, item.date, item.uid, item.categories.join(" "),
     ].filter(Boolean).join(" \u00b7 "));
   }
@@ -297,7 +395,7 @@ function apply(push) {
     (!state.crafts.size || i.categories.some((c) => state.crafts.has(c))) &&
     (!state.sum || (i.place && i.place.sum_key === state.sum)) &&
     (!state.place || (i.place && i.place.key === state.place)) &&
-    (!state.household || i.household === state.household) &&
+    (!state.maker || i.maker === state.maker) &&
     (!state.photographer || i.credit === state.photographer) &&
     (!needles.length || matches(i, needles)));
 
@@ -312,7 +410,7 @@ function apply(push) {
   const n = state.filtered.length;
   $("count").textContent = n === 1 ? t("showing_one") : t("showing", { n });
   $("hero").hidden = state.crafts.size > 0 || !!state.q || !!state.sum || !!state.place ||
-    !!state.household || !!state.photographer || state.page > 1;
+    !!state.maker || !!state.photographer || state.page > 1;
 
   drawGrid();
   drawPager(pages);
@@ -358,7 +456,7 @@ function drawGrid() {
     meta.className = "meta";
     const by = item.type === "video" ? t("video_by") : t("photo_by");
     const where = item.place ? (placeName(item.place) || sumName(item.place)) : "";
-    meta.textContent = [where, item.categories[0], item.credit && `${by}: ${item.credit}`]
+    meta.textContent = [where, catLabel(item.categories[0] || ""), item.credit && `${by}: ${item.credit}`]
       .filter(Boolean).join(" · ");
     card.append(frame, title, meta);
     card.addEventListener("click", () => showItem(item.uid, true));
@@ -452,7 +550,7 @@ function showItem(uid, push) {
 
   const cat = item.categories[0];
   const tag = $("item-cat");
-  tag.textContent = cat || "";
+  tag.textContent = cat ? catLabel(cat) : "";
   tag.hidden = !cat;
   if (cat && CATEGORY_COLOURS[cat]) {
     tag.style.background = CATEGORY_COLOURS[cat][0];
