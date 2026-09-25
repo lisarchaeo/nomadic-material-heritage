@@ -107,8 +107,8 @@ CATEGORY_COLUMNS = ["unique_id", "figshare_id", "type", "title", "keywords",
                     "participants_in_repository", "suggested_category",
                     "category", "household", "maker", "reviewed", "notes"]
 CORRECTION_COLUMNS = ["unique_id", "field", "value", "note"]
-PLACE_COLUMNS = ["place_in_repository", "sum_en", "sum_kk", "place_en", "place_kk",
-                 "place_mn", "aimag"]
+PLACE_COLUMNS = ["place_in_repository", "sum_en", "sum_kk", "sum_mn",
+                 "place_en", "place_kk", "place_mn", "aimag", "aimag_kk", "aimag_mn"]
 
 log_lines = []
 
@@ -296,30 +296,51 @@ def suggest_categories(rec, kind):
     return [c for c in CATEGORIES if c in found]
 
 
+CYRILLIC = re.compile(r"[\u0400-\u04FF]")
+
+
 def split_place(raw):
-    """Repository places read: sum, then bag or a smaller place if there is one,
-    then the aimag. Each part may be written 'English/Қазақша'.
-    'Bulgan Sum center/Бұлғын сұмын орталығы, Bayan Ölgii' ->
-        sum: (Bulgan Sum center, Бұлғын сұмын орталығы)
-        detail: ("", "")
-        aimag: Bayan Ölgii
+    """Read a repository place into sum, smaller place and aimag, in English
+    and in Kazakh.
+
+    The repository writes places in several ways, so parts are sorted by their
+    script rather than by their position:
+      'Tsagaannuur Tosgon/Цагааннуур тосгон, Bayan Ölgii'  (slash pairs)
+      'Bulgan Sum, Булган сум, Bayan Ölgii'                (translation as its own part)
+      'Sagsay Sum, Dayan Arkhalykh, Bayan Ölgii'           (a real bag name)
+      'Ногооннуур сұмыны, Басқы Көпір, Bayan Ölgii'        (Kazakh only)
     """
+    blank = {"sum_en": "", "sum_kk": "", "place_en": "", "place_kk": "",
+             "aimag": "", "aimag_kk": ""}
     raw = (raw or "").strip()
     if not raw:
-        return {"sum_en": "", "sum_kk": "", "place_en": "", "place_kk": "", "aimag": ""}
-    parts = [p.strip() for p in raw.split(",") if p.strip()]
-    aimag = parts.pop() if len(parts) > 1 else ""
-    halves = []
-    for part in parts:
-        en, kk = (part.split("/", 1) + [""])[:2] if "/" in part else (part, "")
-        halves.append((en.strip(), kk.strip()))
-    sum_en, sum_kk = halves[0] if halves else ("", "")
-    rest = halves[1:]
+        return blank
+
+    latin, cyrillic = [], []
+    for part in raw.split(","):
+        for half in part.split("/"):
+            half = half.strip()
+            if not half:
+                continue
+            (cyrillic if CYRILLIC.search(half) else latin).append(half)
+
+    aimag = aimag_kk = ""
+    if latin:
+        aimag = latin.pop()
+        # the Kazakh list carries the aimag too when it has one part more
+        if cyrillic and len(cyrillic) == len(latin) + 1:
+            aimag_kk = cyrillic.pop()
+    elif len(cyrillic) > 1:
+        # written only in Kazakh
+        aimag_kk = cyrillic.pop()
+
     return {
-        "sum_en": sum_en, "sum_kk": sum_kk,
-        "place_en": ", ".join(h[0] for h in rest if h[0]),
-        "place_kk": ", ".join(h[1] for h in rest if h[1]),
+        "sum_en": latin[0] if latin else "",
+        "sum_kk": cyrillic[0] if cyrillic else "",
+        "place_en": ", ".join(latin[1:]),
+        "place_kk": ", ".join(cyrillic[1:]),
         "aimag": aimag,
+        "aimag_kk": aimag_kk,
     }
 
 
@@ -491,18 +512,26 @@ def main():
         prow = places.get(norm(place_raw))
         if place_raw and prow is None:
             prow = {"place_in_repository": place_raw, "sum_en": parsed["sum_en"],
-                    "sum_kk": parsed["sum_kk"], "place_en": parsed["place_en"],
-                    "place_kk": parsed["place_kk"], "place_mn": "", "aimag": parsed["aimag"]}
+                    "sum_kk": parsed["sum_kk"], "sum_mn": "",
+                    "place_en": parsed["place_en"], "place_kk": parsed["place_kk"],
+                    "place_mn": "", "aimag": parsed["aimag"],
+                    "aimag_kk": parsed["aimag_kk"], "aimag_mn": ""}
             places[norm(place_raw)] = prow
+        # a place with no English name is keyed on its Kazakh one
+        sum_key = norm(prow["sum_en"] or prow["sum_kk"]) if prow else ""
+        place_key = norm(prow["place_en"] or prow["place_kk"]) if prow else ""
         place = {
             "sum": prow["sum_en"] if prow else "",
             "sum_kk": prow["sum_kk"] if prow else "",
-            "sum_key": norm(prow["sum_en"]) if prow else "",
+            "sum_mn": prow["sum_mn"] if prow else "",
+            "sum_key": sum_key,
             "en": prow["place_en"] if prow else "",
             "kk": prow["place_kk"] if prow else "",
             "mn": prow["place_mn"] if prow else "",
-            "key": norm((prow["sum_en"] + "|" + prow["place_en"])) if prow else "",
+            "key": (sum_key + "|" + place_key) if prow else "",
             "aimag": prow["aimag"] if prow else "",
+            "aimag_kk": prow["aimag_kk"] if prow else "",
+            "aimag_mn": prow["aimag_mn"] if prow else "",
         }
 
         credit = fix.get("credit") or nice_name(rec["authors"][0] if rec["authors"] else "")
